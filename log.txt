@@ -479,3 +479,6 @@ Bought 50 shares of SHIB/USDC for 9.43e-06
 Bought 1 shares of AAVE/USD for 91.067
 Bought 50 shares of USDT/USD for 0.999205
 Bought 50 shares of USDT/USD for 0.999205
+Bought 7 shares of LINK/USD for 14.2747
+Bought 50 shares of DOGE/USDC for 0.09216755
+Bought 50 shares of SHIB/USDC for 9.475e-06

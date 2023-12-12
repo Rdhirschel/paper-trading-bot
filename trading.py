@@ -1,7 +1,7 @@
 """
 Made by Rdhirschel
-
 """
+
 # Alpaca-py documentation: https://alpaca.markets/sdks/python/trading.html
 from alpaca.data.historical import CryptoHistoricalDataClient
 from alpaca.trading.client import TradingClient, OrderRequest
@@ -17,6 +17,7 @@ import statistics
 import time
 import random as rnd
 import math
+import os
 
 # Constants
 OSCILLATION_THRESHOLD = 10
@@ -24,8 +25,9 @@ MAX_QTY_TO_BUY = 50
 MAX_BUY_ORDERS = 5
 MAX_SELL_ORDERS = 5
 MAX_SPEND_ON_BUY = 100
-API_KEY = "<API KEY>"
-API_SECRET = '<API SECRET>' 
+API_KEY = '<API_KEY>' 
+API_SECRET = '<API_SECRET>'
+
 
 def ShouldSell(prices, position):
     if float(position.qty) <= 0:
