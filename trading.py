@@ -84,10 +84,17 @@ all_assets = trading_client.get_all_assets(filter=search_params)
 stocks = [asset for asset in all_assets if 'BTC' not in asset.symbol] # BTC doesn't work for some reason
 
 # Log file
-with open("log.txt", "a") as log_file, open("cash.txt", "a") as cash_file:
+with open("saves/log.txt", "a") as log_file, open("saves/cash.txt", "a") as cash_file:
     iteration = 0
     while True:
+        iteration += 1
         positions = trading_client.get_all_positions()
+
+        if iteration % 1 == 0:
+            cash_file.write(f"{cash}\n")
+            cash_file.flush()
+
+        
 
         for position in positions:
             stock = position.symbol
@@ -154,12 +161,6 @@ with open("log.txt", "a") as log_file, open("cash.txt", "a") as cash_file:
                     print(f"")
             else:
                 print(f"Not enough cash to buy {qty_to_buy} shares of {stock.symbol}")
-
-        if iteration % 10 == 0:
-            cash_file.write(f"Iteration: {iteration}, Cash: {cash}\n")
-            cash_file.flush()
-
-        iteration += 1
 
     log_file.close()
     cash_file.close()
