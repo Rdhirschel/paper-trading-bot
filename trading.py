@@ -28,7 +28,6 @@ MAX_SPEND_ON_BUY = 100
 API_KEY = '<API_KEY>' 
 API_SECRET = '<API_SECRET>'
 
-
 def ShouldSell(prices, position):
     if float(position.qty) <= 0:
         return False
@@ -45,6 +44,7 @@ def ShouldSell(prices, position):
         return True
 
     return False
+
 def print_positions(positions):
     for position in positions:
         print(f"Symbol: {position.symbol}")
@@ -55,6 +55,7 @@ def print_positions(positions):
         print(f"Unrealized Profit/Loss: {position.unrealized_pl}")
         print(f"Unrealized Profit/Loss %: {position.unrealized_plpc}")
         print("---------------------------")
+
 def ShouldBuy(prices, position):
     close_prices = [bar.close for bar in prices[position.symbol]]
 
@@ -83,7 +84,8 @@ all_assets = trading_client.get_all_assets(filter=search_params)
 stocks = [asset for asset in all_assets if 'BTC' not in asset.symbol] # BTC doesn't work for some reason
 
 # Log file
-with open("log.txt", "a") as log_file:
+with open("log.txt", "a") as log_file, open("cash.txt", "a") as cash_file:
+    iteration = 0
     while True:
         positions = trading_client.get_all_positions()
 
@@ -106,6 +108,7 @@ with open("log.txt", "a") as log_file:
                 try:
                     trading_client.submit_order(order_request)
                     log_file.write(f"Sold {position.qty} shares of {stock} for {prices[-1].close}\n")
+                    log_file.flush()  # Flush the log file to update changes
                     cash += float(position.qty) * prices[-1].close 
 
                     positions = trading_client.get_all_positions()
@@ -145,9 +148,18 @@ with open("log.txt", "a") as log_file:
                 try:
                     trading_client.submit_order(order_request)
                     log_file.write(f"Bought {qty_to_buy} shares of {stock.symbol} for {last_price}\n")
+                    log_file.flush()  # Flush the log file to update changes
                     cash -= qty_to_buy * last_price
                 except Exception as e:
                     print(f"")
             else:
                 print(f"Not enough cash to buy {qty_to_buy} shares of {stock.symbol}")
+
+        if iteration % 10 == 0:
+            cash_file.write(f"Iteration: {iteration}, Cash: {cash}\n")
+            cash_file.flush()
+
+        iteration += 1
+
     log_file.close()
+    cash_file.close()
