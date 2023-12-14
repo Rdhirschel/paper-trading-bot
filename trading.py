@@ -28,22 +28,43 @@ MAX_SPEND_ON_BUY = 100
 API_KEY = '<API_KEY>' 
 API_SECRET = '<API_SECRET>'
 
-def ShouldSell(prices, position):
-    if float(position.qty) <= 0:
-        return False
+# def ShouldSell(prices, position):
+#     if float(position.qty) <= 0:
+#         return False
 
-    symbol = position.symbol.replace("USD", "/USD")
-    close_prices = [bar.close for bar in prices[symbol]]
-    average_price = statistics.mean(close_prices)
-    current_price = close_prices[-1]
-    previous_price = close_prices[-2] if len(close_prices) > 1 else current_price
+#     symbol = position.symbol.replace("USD", "/USD")
+#     close_prices = [bar.close for bar in prices[symbol]]
+#     average_price = statistics.mean(close_prices)
+#     current_price = close_prices[-1]
+#     previous_price = close_prices[-2] if len(close_prices) > 1 else current_price
 
-    profit_threshold = 1.1 * close_prices[0]  # Adjustable
+#     profit_threshold = 1.1 * close_prices[0]  # Adjustable
 
-    if (current_price > average_price and current_price >= profit_threshold) or current_price < previous_price:
-        return True
+#     if (current_price > average_price and current_price >= profit_threshold) or current_price < previous_price:
+#         return True
 
-    return False
+#     return False
+
+
+# def ShouldBuy(prices, position):
+#     close_prices = [bar.close for bar in prices[position.symbol]]
+
+#     average_price = statistics.mean(close_prices)
+
+#     price_deviation = statistics.stdev(close_prices)
+#     current_price = close_prices[-1]
+
+#     if price_deviation > OSCILLATION_THRESHOLD:
+#         return False
+
+#     if current_price > average_price or average_price > MAX_SPEND_ON_BUY or current_price > MAX_SPEND_ON_BUY:
+#         return False
+
+#     if current_price < average_price:
+#         return True
+    
+#     return False
+
 
 def print_positions(positions):
     for position in positions:
@@ -56,24 +77,22 @@ def print_positions(positions):
         print(f"Unrealized Profit/Loss %: {position.unrealized_plpc}")
         print("---------------------------")
 
+def calculate_momentum(prices, period):
+    if len(prices) < period:
+        return 0
+    return prices[-1] - prices[-period]
+
 def ShouldBuy(prices, position):
-    close_prices = [bar.close for bar in prices[position.symbol]]
+    symbol = position.symbol if "/USD" in position.symbol else position.symbol + "/USD"
+    close_prices = [bar.close for bar in prices[symbol]]
+    momentum = calculate_momentum(close_prices, 14)
+    return momentum > 0
 
-    average_price = statistics.mean(close_prices)
-
-    price_deviation = statistics.stdev(close_prices)
-    current_price = close_prices[-1]
-
-    if price_deviation > OSCILLATION_THRESHOLD:
-        return False
-
-    if current_price > average_price or average_price > MAX_SPEND_ON_BUY or current_price > MAX_SPEND_ON_BUY:
-        return False
-
-    if current_price < average_price:
-        return True
-    
-    return False
+def ShouldSell(prices, position):
+    symbol = position.symbol if "/USD" in position.symbol else position.symbol + "/USD"
+    close_prices = [bar.close for bar in prices[symbol]]
+    momentum = calculate_momentum(close_prices, 14)
+    return momentum < 0
 
 client = CryptoHistoricalDataClient()
 trading_client = TradingClient(API_KEY, API_SECRET, paper=True)

@@ -43,9 +43,6 @@ class TradingApp(tk.Tk):
         self.x_axis_label = tk.Label(self, text="Time (secs)", font=("Arial", 14, "bold"), bg='#F0F8FF', fg='black')
         self.x_axis_label.pack(pady=5)
 
-        self.y_axis_label = tk.Label(self, text="Cash Amount", font=("Arial", 14, "bold"), bg='#F0F8FF', fg='black')
-        self.y_axis_label.pack(pady=5)
-
         # Logs Section
         self.log_label = tk.Label(self, text="Logs:", font=("Arial", 18, "bold"), bg='#F0F8FF', fg='black')
         self.log_label.pack(pady=10)
