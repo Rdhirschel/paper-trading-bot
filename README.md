@@ -1,11 +1,10 @@
 # Paper Trading Bot
 
-The Paper Trading Bot is a project that simulates trading with real-time stock data. It leverages the Alpaca API for trading and retrieves historical data for analysis.
+The Paper Trading Bot is a project that trades using realtime data. This uses the Alpaca API.
 
 ## Key Features
 - Monitor your cash balance and track your trading performance.
 - Visualize your cash balance in real-time.
-- Log your trading activities for review and analysis.
 
 ## Disclaimer
 - Please note that the current state of this trading bot is primarily for learning purposes.
